@@ -15,7 +15,7 @@ from flask import (
 # APP CONFIGURATION
 # ------------------------------------------------------------
 app = Flask(__name__)
-app.secret_key = 'supersecretkey4studentresultapp'  # change in production
+app.secret_key = os.environ.get("SECRET_KEY")
 
 # Upload configuration
 UPLOAD_FOLDER = 'static/uploads'
@@ -522,4 +522,5 @@ with app.app_context():
     init_db()
 
 if __name__ == '__main__':
+
     app.run(debug=True)
