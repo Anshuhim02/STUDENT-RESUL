@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h4 class="fw-bold">
+                {% if result %}
+                <i class="fas fa-edit me-2"></i>Edit Result
+                {% else %}
+                <i class="fas fa-plus-circle me-2"></i>Add New Result
+                {% endif %}
+            </h4>
+        </div>
+        <div class="card-body p-4">
+            <form method="POST" enctype="multipart/form-data" id="resultForm">
+                <!-- SECTION 1: Basic Details -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Student Name *</label>
+                        <input type="text" name="student_name" class="form-control rounded-pill" value="{{ result.student_name if result else '' }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Board</label>
+                        <input type="text" name="board" class="form-control rounded-pill" value="{{ result.board if result else '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Exam</label>
+                        <input type="text" name="exam" class="form-control rounded-pill" value="{{ result.exam if result else '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">School</label>
+                        <input type="text" name="school" class="form-control rounded-pill" value="{{ result.school if result else '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Class</label>
+                        <input type="text" name="class_name" class="form-control rounded-pill" value="{{ result.class_name if result else '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Year</label>
+                        <input type="number" name="year" class="form-control rounded-pill" value="{{ result.year if result else '' }}">
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Number of Subjects -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-book-open me-2"></i>Subjects</h5>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Number of subjects</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" id="subjectCount" class="form-control rounded-pill" min="1" max="20" placeholder="e.g. 5">
+                            <button type="button" id="generateSubjectsBtn" class="btn btn-outline-primary rounded-pill px-4">
+                                <i class="fas fa-table me-1"></i>Generate
+                            </button>
+                        </div>
+                        <small class="text-muted">Click Generate to create subject rows.</small>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: Dynamic Subject Table -->
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle" id="subjectTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Subject Name</th>
+                                <th>Obtained Marks</th>
+                                <th>Total Marks</th>
+                                <th style="width: 50px;"><i class="fas fa-trash"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectRows">
+                            {% if subjects %}
+                                {% for sub in subjects %}
+                                <tr>
+                                    <td><input type="text" name="subject_name[]" class="form-control" value="{{ sub.subject_name }}" required></td>
+                                    <td><input type="number" name="obtained[]" class="form-control obtained" value="{{ sub.obtained }}" required min="0"></td>
+                                    <td><input type="number" name="total[]" class="form-control total" value="{{ sub.total }}" required min="1"></td>
+                                    <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger remove-row"><i class="fas fa-times"></i></button></td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fas fa-arrow-up me-2"></i>Set number of subjects and click Generate.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SECTION 4: Image Upload -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-image me-2"></i>Result Image (optional)</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Upload image</label>
+                        <input type="file" name="image" class="form-control rounded-pill" accept="image/png, image/jpeg">
+                        {% if result and result.image_path %}
+                        <div class="mt-2">
+                            <span class="badge bg-info">Current image:</span>
+                            <a href="{{ url_for('static', filename=result.image_path) }}" target="_blank">
+                                <img src="{{ url_for('static', filename=result.image_path) }}" alt="Current" style="height: 50px;" class="rounded-3 ms-2">
+                            </a>
+                        </div>
+                        {% endif %}
+                        <small class="text-muted d-block mt-1">Allowed: jpg, jpeg, png. Max 16MB.</small>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: Auto Calculation & Summary -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-calculator me-2"></i>Summary & Auto Calculation</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <button type="button" id="calculateBtn" class="btn btn-success rounded-pill w-100 py-2">
+                            <i class="fas fa-sync-alt me-2"></i>Calculate
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Total Obtained</label>
+                        <input type="text" id="totalObtained" class="form-control rounded-pill bg-light" readonly value="{{ result.total_obtained if result else '0' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Total Marks</label>
+                        <input type="text" id="totalMarks" class="form-control rounded-pill bg-light" readonly value="{{ result.total_marks if result else '0' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Percentage</label>
+                        <input type="text" id="percentage" class="form-control rounded-pill bg-light" readonly value="{{ "%.2f"|format(result.percentage) if result else '0.00' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Grade</label>
+                        <input type="text" id="grade" class="form-control rounded-pill bg-light" readonly value="{{ result.grade if result else 'N/A' }}">
+                    </div>
+                </div>
+
+                <!-- SAVE BUTTON -->
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary rounded-pill px-5">Cancel</a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5">
+                        <i class="fas fa-save me-2"></i>Save Result
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

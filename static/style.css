@@ -1,0 +1,112 @@
+/* Global & Typography */
+body {
+    background: #f8fafc;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding-bottom: 2rem;
+}
+
+/* Soft cards, rounded corners, subtle shadows */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.08) !important;
+}
+
+/* Rounded utility */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+/* Navbar brand and links */
+.navbar-brand {
+    letter-spacing: -0.02em;
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255,255,255,0.85);
+}
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: white;
+}
+
+/* Badge enhancements */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 1em;
+}
+
+/* Form inputs */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.1);
+    border-color: #86b7fe;
+}
+.input-group-text {
+    background-color: white;
+    border-right: none;
+}
+.input-group .form-control {
+    border-left: none;
+}
+.input-group .form-control:focus {
+    border-left: none;
+}
+
+/* Responsive tap targets (mobile) */
+@media (max-width: 576px) {
+    .btn {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        font-size: 1rem;
+    }
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    .display-6 {
+        font-size: 1.75rem;
+    }
+}
+
+/* Gradient backgrounds for stats */
+.bg-gradient.bg-primary {
+    background: linear-gradient(145deg, #0d6efd, #0b5ed7);
+}
+.bg-gradient.bg-success {
+    background: linear-gradient(145deg, #198754, #157347);
+}
+.bg-gradient.bg-warning {
+    background: linear-gradient(145deg, #ffc107, #ffca2c);
+}
+
+/* Auth toggle pills */
+.nav-pills .nav-link {
+    border-radius: 2rem;
+    padding: 0.6rem 1rem;
+    color: #6c757d;
+}
+.nav-pills .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Table responsive tweaks */
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom-width: 1px;
+    font-weight: 600;
+}
+
+/* Custom scroll for small devices */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}

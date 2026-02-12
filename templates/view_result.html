@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h4 class="fw-bold"><i class="fas fa-file-alt me-2"></i>Result Details</h4>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+        </div>
+        <div class="card-body p-4">
+            <!-- Basic Info Grid -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted"><i class="fas fa-user-graduate me-2"></i>Student Name</p>
+                    <h5>{{ result.student_name }}</h5>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted"><i class="fas fa-building me-2"></i>Board</p>
+                    <h5>{{ result.board or 'N/A' }}</h5>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted"><i class="fas fa-calendar me-2"></i>Year</p>
+                    <h5>{{ result.year or 'N/A' }}</h5>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1 text-muted"><i class="fas fa-school me-2"></i>School</p>
+                    <h5>{{ result.school or 'N/A' }}</h5>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1 text-muted"><i class="fas fa-layer-group me-2"></i>Class</p>
+                    <h5>{{ result.class_name or 'N/A' }}</h5>
+                </div>
+                <div class="col-md-4">
+                    <p class="mb-1 text-muted"><i class="fas fa-pencil-alt me-2"></i>Exam</p>
+                    <h5>{{ result.exam or 'N/A' }}</h5>
+                </div>
+            </div>
+
+            <!-- Subjects Table -->
+            <h5 class="mb-3 text-primary"><i class="fas fa-book me-2"></i>Subject Marks</h5>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Subject</th>
+                            <th>Obtained</th>
+                            <th>Total</th>
+                            <th>%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subjects %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ sub.subject_name }}</td>
+                            <td>{{ sub.obtained }}</td>
+                            <td>{{ sub.total }}</td>
+                            <td>{{ "%.1f"|format((sub.obtained / sub.total * 100) if sub.total > 0 else 0) }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-secondary">
+                        <tr>
+                            <th colspan="2">Total</th>
+                            <th>{{ result.total_obtained }}</th>
+                            <th>{{ result.total_marks }}</th>
+                            <th>{{ "%.1f"|format(result.percentage) }}%</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Summary & Grade -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="bg-light p-3 rounded-4 text-center">
+                        <span class="text-muted small">Percentage</span>
+                        <h2 class="fw-bold text-primary">{{ "%.1f"|format(result.percentage) }}%</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-light p-3 rounded-4 text-center">
+                        <span class="text-muted small">Grade</span>
+                        <h2 class="fw-bold {% if result.grade in ['A+','A','B'] %}text-success{% elif result.grade in ['C','D'] %}text-warning{% else %}text-danger{% endif %}">
+                            {{ result.grade }}
+                        </h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    {% if result.image_path %}
+                    <div class="bg-light p-3 rounded-4 text-center">
+                        <span class="text-muted small">Uploaded Image</span>
+                        <div class="mt-2">
+                            <a href="{{ url_for('static', filename=result.image_path) }}" target="_blank">
+                                <img src="{{ url_for('static', filename=result.image_path) }}" alt="Result Image" class="img-fluid rounded-3" style="max-height: 120px;">
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ url_for('edit_result', id=result.id) }}" class="btn btn-warning rounded-pill px-4">
+                    <i class="fas fa-edit me-2"></i>Edit
+                </a>
+                <form method="POST" action="{{ url_for('delete_result', id=result.id) }}" onsubmit="return confirm('Delete this result?');">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="fas fa-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

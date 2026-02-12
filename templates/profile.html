@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h4 class="fw-bold"><i class="fas fa-user-circle me-2"></i>My Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Profile Stats -->
+                    <div class="bg-light rounded-4 p-3 mb-4 text-center">
+                        <div class="display-4 text-primary mb-2">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h5 class="fw-bold">{{ user.name }}</h5>
+                        <p class="text-muted mb-1">{{ user.email }}</p>
+                        <p class="small text-secondary">
+                            <i class="fas fa-file-alt me-1"></i>Total results: <strong>{{ total_results }}</strong>
+                        </p>
+                    </div>
+
+                    <!-- Update Profile Form -->
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        <h5 class="mb-3 text-primary"><i class="fas fa-edit me-2"></i>Update Information</h5>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Full Name</label>
+                            <input type="text" name="name" class="form-control rounded-pill" value="{{ user.name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email address</label>
+                            <input type="email" name="email" class="form-control rounded-pill" value="{{ user.email }}" required>
+                        </div>
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-warning"><i class="fas fa-lock me-2"></i>Change Password</h5>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Current Password</label>
+                            <input type="password" name="current_password" class="form-control rounded-pill">
+                            <small class="text-muted">Required to save changes.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">New Password (optional)</label>
+                            <input type="password" name="new_password" class="form-control rounded-pill">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Confirm New Password</label>
+                            <input type="password" name="confirm_new_password" class="form-control rounded-pill">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill">
+                            <i class="fas fa-save me-2"></i>Update Profile
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
